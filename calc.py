@@ -113,8 +113,10 @@ class BasicCalculator:
 
 if __name__ == '__main__':
     calc = BasicCalculator()
-    inp = " -2  +(14 - 330)- 3"
-    print(inp)
-    out = calc.run(inp)
-    print(out)
+    if len(sys.argv) > 1:
+        inp = sys.argv[1]
+    else:
+        inp = " -2  +(14 - 330)- 3"
+    print(f"Input: {inp}")
+    print(f"Result: {calc.run(inp)}")
         
