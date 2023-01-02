@@ -20,6 +20,8 @@ class BasicCalc(QtWidgets.QWidget):
 
         self.button_input.oppad.equals.clicked.connect(self.equals_clicked)
         self.text_input.input.returnPressed.connect(self.equals_clicked)
+        for i, number in enumerate(self.button_input.numpad.numbers):
+            number.clicked.connect(self.number_clicked)
 
         self.setWindowTitle("BasicCalculator")
         self.resize(self.width, self.height)
@@ -31,6 +33,11 @@ class BasicCalc(QtWidgets.QWidget):
             self.text_input.input.setText(str(e))
         else:
             self.text_input.input.setText(str(out))
+
+    def number_clicked(self):
+        num = self.sender().text()
+        inp = self.text_input.input.text()
+        self.text_input.input.setText(inp + num)
 
 class TextInput(QtWidgets.QWidget):
     def __init__(self):
