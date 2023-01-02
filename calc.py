@@ -43,40 +43,18 @@ class BasicCalculator:
         '''
         assert right - left >= 1
 
-        if right - left == 1:
-            self._ensure_is_number(tokens[left], left)
-            return self._eval_op('+', tokens[left], 0)
-
+        i = left
         res = 0
-        if tokens[left] in ['+', '-']:
-            a = res
-            op_idx = left
-        elif tokens[left] == '(':
-            a = self._calculate(tokens, sub_exprs, left + 1, sub_exprs[left])
-            op_idx = sub_exprs[left] + 1
-        else:
-            self._ensure_is_number(tokens[left], left)
-            a = tokens[left]
-            op_idx = left + 1
-        
-        b_idx = op_idx + 1
-        i = b_idx + 1
-        
-        if op_idx >= right:
-            res = self._eval_op('+', a, 0)
-        else:
-            self._ensure_is_op(tokens[op_idx], op_idx)
-            if tokens[b_idx] == '(':
-                b = self._calculate(tokens, sub_exprs, left + 1, sub_exprs[b_idx])
-                i = sub_exprs[b_idx] + 1
-            else:
-                self._ensure_is_number(tokens[b_idx], left)
-                b = tokens[b_idx]
-            res = self._eval_op(tokens[op_idx], a, b)
-
         while i < right:
+            if tokens[i] == '(':
+                res = self._calculate(tokens, sub_exprs, i + 1, sub_exprs[i])
+                i = sub_exprs[i] + 1
+                continue
+            if self._is_number(tokens[i]):
+                res = self._eval_op('+', tokens[i], 0)
+                i += 1
+                continue
             op = tokens[i]
-            self._ensure_is_op(op, i)
             if i + 1 == right:
                 raise RuntimeError(f"Incomplete expression at idx: {i}, expected operand")
             if tokens[i + 1] == '(':
@@ -97,6 +75,9 @@ class BasicCalculator:
     def _ensure_is_number(self, token, idx):
         if token in BasicCalculator._parens or token in BasicCalculator._ops:
             raise RuntimeError(f"Invalid token at idx: {idx}, expected number, but got: {token}")
+
+    def _is_number(self, token):
+        return all(x in BasicCalculator._numbers for x in token)
 
     def _form_sub_exprs(self, tokens):
         sub_exprs = {}
