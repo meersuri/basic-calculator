@@ -18,12 +18,16 @@ class BasicCalc(QtWidgets.QWidget):
         self.layout.addWidget(self.text_input)
         self.layout.addWidget(self.button_input)
 
-        self.button_input.oppad.equals.clicked.connect(self.equals_clicked)
+        self.button_input.oppad.ops['equals'].clicked.connect(self.equals_clicked)
         self.text_input.input.returnPressed.connect(self.equals_clicked)
         for i, number in enumerate(self.button_input.numpad.numbers):
             number.clicked.connect(self.number_clicked)
-
+        for name, op in self.button_input.oppad.ops.items():
+            if name == 'equals':
+                continue
+            op.clicked.connect(self.op_clicked)
         self.setWindowTitle("BasicCalculator")
+
         self.resize(self.width, self.height)
 
     def equals_clicked(self):
@@ -38,6 +42,11 @@ class BasicCalc(QtWidgets.QWidget):
         num = self.sender().text()
         inp = self.text_input.input.text()
         self.text_input.input.setText(inp + num)
+
+    def op_clicked(self):
+        op = self.sender().text()
+        inp = self.text_input.input.text()
+        self.text_input.input.setText(inp + op)
 
 class TextInput(QtWidgets.QWidget):
     def __init__(self):
@@ -65,12 +74,15 @@ class ButtonInput(QtWidgets.QWidget):
 class OperatorInput(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
-        self.equals = QtWidgets.QPushButton("=")
-
+        self.ops = {}
+        ops = [('plus','+'), ('minus','-'), ('equals', '=')]
+        for name, symbol in ops:
+            self.ops[name] = QtWidgets.QPushButton(symbol)
         self.layout = QtWidgets.QVBoxLayout()
         self.setLayout(self.layout)
 
-        self.layout.addWidget(self.equals)
+        for op in self.ops.values():
+            self.layout.addWidget(op)
 
 class NumberInput(QtWidgets.QWidget):
     def __init__(self):
