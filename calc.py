@@ -16,7 +16,7 @@ class BasicCalculator:
         left, right = 0, 0
         while right < len(input_str):
             if input_str[right] not in BasicCalculator._valid_tokens:
-                raise TypeError(f"Invalid character: {input_str[right]}")
+                raise RuntimeError(f"Invalid character: {input_str[right]}")
             if input_str[right] in BasicCalculator._numbers:
                 right += 1
                 continue
@@ -103,7 +103,7 @@ class BasicCalculator:
             return int(a) + int(b)
         if op == '-':
             return int(a) - int(b)
-        raise TypeError(f"Invalid op: {op}")
+        raise RuntimeError(f"Invalid op: {op}")
 
     def run(self, input_str):
         self._input_str = input_str

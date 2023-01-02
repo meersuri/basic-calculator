@@ -52,3 +52,43 @@ class TestCalculator(unittest.TestCase):
     def test_grouped_add_subtract_2(self):
         exp = "(-(3) - (-4) + (-(3-4)+7))"
         self.assertTrue(eval(exp), BC().run(exp))
+
+    def test_grouped_add_subtract_3(self):
+        exp = "-1-2+3-(-4-(-5+(-7)+1)-(-(4+1))+3)"
+        self.assertTrue(eval(exp), BC().run(exp))
+
+    def test_incomplete_expr_only_op(self):
+        with self.assertRaises(RuntimeError):
+            BC().run("+")
+
+    def test_incomplete_expr_missing_b(self):
+        with self.assertRaises(RuntimeError):
+            BC().run("1-2+")
+
+    def test_bad_grouping_missing_close(self):
+        with self.assertRaises(RuntimeError):
+            BC().run("(1-2+3")
+
+    def test_bad_grouping_missing_close_1(self):
+        with self.assertRaises(RuntimeError):
+            BC().run("(3+(1-2+(3))")
+
+    def test_bad_grouping_missing_open(self):
+        with self.assertRaises(RuntimeError):
+            BC().run("(-1))+(1-2+3)")
+
+    def test_invalid_token(self):
+        with self.assertRaises(RuntimeError):
+            BC().run("(-1))&(1-2+3)")
+
+    def test_invalid_token_1(self):
+        with self.assertRaises(RuntimeError):
+            BC().run("1+(hello world)")
+
+    def test_missing_operand(self):
+        with self.assertRaises(RuntimeError):
+            BC().run("-(-3)+")
+
+    def test_missing_operand_1(self):
+        with self.assertRaises(RuntimeError):
+            BC().run("1+3+-4-7")
