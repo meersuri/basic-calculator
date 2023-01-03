@@ -108,7 +108,7 @@ class BasicCalculator:
         if op == '/':
             x, y = int(a), int(b)
             if y == 0 and x != 0:
-                raise ZeroDivisionError
+                raise ZeroDivisionError("Divide by zero")
             if y == 0 and x == 0:
                 raise RuntimeError(f"Undefined")
             return int(a) // int(b)

@@ -94,6 +94,9 @@ class TestCalculator(unittest.TestCase):
             BC().run("1+3+-4-7")
 
     def test_simple_multiply(self):
+        self.assertEqual(BC().run("*3"), 0)
+
+    def test_simple_multiply_1(self):
         self.assertEqual(BC().run("2*3"), 6)
 
     def test_multiply_sequential(self):
@@ -103,6 +106,42 @@ class TestCalculator(unittest.TestCase):
         inp = "-2 *(2+3)  *3*(5*1+3)"
         self.assertEqual(BC().run(inp), eval(inp))
 
+    @unittest.expectedFailure
+    def test_simple_add_multiply(self):
+        inp = "2+5*3"
+        self.assertEqual(BC().run(inp), eval(inp))
+
+    @unittest.expectedFailure
     def test_add_sub_multiply(self):
         inp = "-2 *(2-3*(2))  *3*(5*1-3*(-1-(-4*3)))"
         self.assertEqual(BC().run(inp), eval(inp))
+
+    def test_simple_divide(self):
+        self.assertEqual(BC().run("/2"), 0)
+
+    def test_simple_divide_1(self):
+        self.assertEqual(BC().run("4/2"), 2)
+
+    def test_simple_divide_flooring(self):
+        self.assertEqual(BC().run("4/3"), 1)
+
+    def test_simple_divide_flooring_1(self):
+        self.assertEqual(BC().run("10/2/3"), 1)
+
+    def test_zero_division(self):
+        with self.assertRaises(ZeroDivisionError):
+            BC().run("4/0")
+
+    def test_zero_by_zero(self):
+        with self.assertRaises(RuntimeError):
+            BC().run("0/0")
+
+    def test_simple_divide_seq(self):
+        self.assertEqual(BC().run("48/2/3/4"), 2)
+
+    def test_simple_add_divide(self):
+        self.assertEqual(BC().run("3/2+48+4"), 53)
+
+    @unittest.expectedFailure
+    def test_simple_add_divide_1(self):
+        self.assertEqual(BC().run("48+3/2+4"), 53)
