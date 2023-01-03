@@ -3,7 +3,7 @@ import sys
 class BasicCalculator:
 
     _numbers = [str(i) for i in range(10)]
-    _ops = ['+', '-']
+    _ops = ['+', '-', '*', '/']
     _parens = ['(', ')']
     _valid_tokens =  _numbers + _ops + _parens
 
@@ -103,6 +103,15 @@ class BasicCalculator:
             return int(a) + int(b)
         if op == '-':
             return int(a) - int(b)
+        if op == '*':
+            return int(a) * int(b)
+        if op == '/':
+            x, y = int(a), int(b)
+            if y == 0 and x != 0:
+                raise ZeroDivisionError
+            if y == 0 and x == 0:
+                raise RuntimeError(f"Undefined")
+            return int(a) // int(b)
         raise RuntimeError(f"Invalid op: {op}")
 
     def run(self, input_str):
