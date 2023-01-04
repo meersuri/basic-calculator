@@ -33,7 +33,7 @@ class BasicCalc(QtWidgets.QWidget):
     def equals_clicked(self):
         try:
             out = self.bc.run(self.text_input.input.text())
-        except RuntimeError as e:
+        except Exception as e:
             self.text_input.input.setText(str(e))
         else:
             self.text_input.input.setText(str(out))

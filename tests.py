@@ -106,12 +106,14 @@ class TestCalculator(unittest.TestCase):
         inp = "-2 *(2+3)  *3*(5*1+3)"
         self.assertEqual(BC().run(inp), eval(inp))
 
-    @unittest.expectedFailure
     def test_simple_add_multiply(self):
         inp = "2+5*3"
         self.assertEqual(BC().run(inp), eval(inp))
 
-    @unittest.expectedFailure
+    def test_simple_add_multiply_1(self):
+        inp = "2+5*3-3*(4-1)+1"
+        self.assertEqual(BC().run(inp), eval(inp))
+
     def test_add_sub_multiply(self):
         inp = "-2 *(2-3*(2))  *3*(5*1-3*(-1-(-4*3)))"
         self.assertEqual(BC().run(inp), eval(inp))
@@ -142,6 +144,10 @@ class TestCalculator(unittest.TestCase):
     def test_simple_add_divide(self):
         self.assertEqual(BC().run("3/2+48+4"), 53)
 
-    @unittest.expectedFailure
     def test_simple_add_divide_1(self):
         self.assertEqual(BC().run("48+3/2+4"), 53)
+
+    def test_simple_add_divide_2(self):
+        inp = "48+3/2+9/(3+4)+1"
+        eval_inp = inp.replace('/', '//')
+        self.assertEqual(BC().run(inp), eval(eval_inp))

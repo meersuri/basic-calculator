@@ -33,6 +33,43 @@ class BasicCalculator:
             raise RuntimeError(f"Empty expression")
 
         return tokens
+
+    def _set_op_precedence(self, tokens):
+        '''
+        3-5*2
+        3-(5*2)
+        4+(3-5)*(4+5*3)+(2)
+        4+((3-5)*(4+5*3))
+        4+((3-5)*(4+(5*3)))
+        '''
+        sub_exprs = self._form_sub_exprs(tokens)
+        i = 1
+        while i < len(tokens) - 1:
+            if self._is_op(tokens[i]):
+                i += 1
+                continue
+            if i == '(':
+                sub_end = sub_exprs[i]
+                if sub_end + 1 >= len(tokens):
+                    i += 1
+                    continue
+                right = sub_end + 1
+            else:
+                right = i + 1
+            left = i - 1
+            if not (tokens[left] in ['+', '-'] and tokens[right] in ['*', '/']):
+                i += 1
+                continue
+            if right + 1 in sub_exprs:
+                next_right = sub_exprs[right + 1]
+            else:
+                next_right = right + 2
+            tokens.insert(next_right, ')')
+            tokens.insert(i, '(')
+            i = 1
+            sub_exprs = self._form_sub_exprs(tokens)
+
+        return tokens
         
     def _calculate(self, tokens, sub_exprs, left, right):
         '''
@@ -79,6 +116,9 @@ class BasicCalculator:
     def _is_number(self, token):
         return all(x in BasicCalculator._numbers for x in token)
 
+    def _is_op(self, token):
+        return token in self._ops
+
     def _form_sub_exprs(self, tokens):
         sub_exprs = {}
         starts = []
@@ -117,6 +157,9 @@ class BasicCalculator:
     def run(self, input_str):
         self._input_str = input_str
         self._tokens = self._tokenize(input_str)
+        print(''.join(self._tokens))
+        self._tokens = self._set_op_precedence(self._tokens)
+        print(''.join(self._tokens))
         sub_exprs = self._form_sub_exprs(self._tokens)
         return self._calculate(self._tokens, sub_exprs, 0, len(self._tokens))
 
