@@ -6,6 +6,12 @@ class BasicCalculator:
     _ops = ['+', '-', '*', '/']
     _parens = ['(', ')']
     _valid_tokens =  _numbers + _ops + _parens
+    _precedence_rules = [
+        ('+','*','*'),
+        ('+','/','/'),
+        ('-','/','-'),
+    ]
+
 
     def __init__(self):
         self._input_str = ""
@@ -42,7 +48,7 @@ class BasicCalculator:
         4+((3-5)*(4+5*3))
         4+((3-5)*(4+(5*3)))
         '''
-        sub_exprs = self._form_sub_exprs(tokens)
+        sub_exprs = self._find_sub_exprs(tokens)
         i = 1
         while i < len(tokens) - 1:
             if self._is_op(tokens[i]):
@@ -67,7 +73,7 @@ class BasicCalculator:
             tokens.insert(next_right, ')')
             tokens.insert(i, '(')
             i = 1
-            sub_exprs = self._form_sub_exprs(tokens)
+            sub_exprs = self._find_sub_exprs(tokens)
 
         return tokens
         
@@ -124,7 +130,7 @@ class BasicCalculator:
     def _is_op(self, token):
         return token in self._ops
 
-    def _form_sub_exprs(self, tokens):
+    def _find_sub_exprs(self, tokens):
         sub_exprs = {}
         starts = []
         for i, x in enumerate(tokens):
@@ -165,7 +171,7 @@ class BasicCalculator:
         print(''.join(self._tokens))
         self._tokens = self._set_op_precedence(self._tokens)
         print(''.join(self._tokens))
-        sub_exprs = self._form_sub_exprs(self._tokens)
+        sub_exprs = self._find_sub_exprs(self._tokens)
         return self._calculate(self._tokens, sub_exprs, 0, len(self._tokens))
 
 if __name__ == '__main__':
