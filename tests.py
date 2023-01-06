@@ -175,7 +175,6 @@ class TestCalculator(unittest.TestCase):
         eval_inp = inp.replace('/', '//')
         self.assertEqual(BC().run(inp), eval(eval_inp))
 
-    @unittest.expectedFailure
     def test_all_ops_1(self):
         inp = "3+(4-(3*(12/(-(4+3/7)+2)-3)/1+2)-4)*2"
         eval_inp = inp.replace('/', '//')

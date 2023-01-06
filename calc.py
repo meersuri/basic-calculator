@@ -6,11 +6,12 @@ class BasicCalculator:
     _ops = ['+', '-', '*', '/']
     _parens = ['(', ')']
     _valid_tokens =  _numbers + _ops + _parens
-    _precedence_rules = [
-        ('+','*','*'),
-        ('+','/','/'),
-        ('-','/','-'),
-    ]
+    _precedence_rules = {
+        ('+','*'):'*',
+        ('-','*'):'*',
+        ('+','/'):'/',
+        ('-','/'):'/',
+    }
 
 
     def __init__(self):
@@ -47,35 +48,41 @@ class BasicCalculator:
         4+(3-5)*(4+5*3)+(2)
         4+((3-5)*(4+5*3))
         4+((3-5)*(4+(5*3)))
+
+       (.. 3)-5*2
+       ((.. 3)-5)*2
         '''
         sub_exprs = self._find_sub_exprs(tokens)
         i = 1
         while i < len(tokens) - 1:
-            if self._is_op(tokens[i]):
+            prev_idx = i - 1
+            next_idx = self._get_next_idx(tokens, sub_exprs, i)
+            if next_idx >= len(tokens):
                 i += 1
                 continue
-            if i == '(':
-                sub_end = sub_exprs[i]
-                if sub_end + 1 >= len(tokens):
-                    i += 1
-                    continue
-                right = sub_end + 1
-            else:
-                right = i + 1
-            left = i - 1
-            if not (tokens[left] in ['+', '-'] and tokens[right] in ['*', '/']):
+            if not (self._is_sub_expr(tokens[i]) and self._is_op(tokens[prev_idx]), self._is_op(tokens[next_idx])):
                 i += 1
                 continue
-            if right + 1 in sub_exprs:
-                next_right = sub_exprs[right + 1]
-            else:
-                next_right = right + 2
-            tokens.insert(next_right, ')')
+
+            op_pair = (tokens[prev_idx], tokens[next_idx])
+            winner = BasicCalculator._precedence_rules.get(op_pair, op_pair[0])
+            if winner == op_pair[0]:
+                i += 1 # matches default left->right order
+                continue
+
+            # insert explicit parens to change ordering
+            next_next_idx = self._get_next_idx(tokens, sub_exprs, next_idx + 1)
+            tokens.insert(next_next_idx, ')')
             tokens.insert(i, '(')
             i = 1
             sub_exprs = self._find_sub_exprs(tokens)
 
         return tokens
+
+    def _get_next_idx(self, tokens, sub_exprs, idx):
+        if tokens[idx] == '(':
+            return sub_exprs[idx] + 1
+        return idx + 1
         
     def _calculate(self, tokens, sub_exprs, left, right):
         '''
