@@ -83,27 +83,29 @@ class BasicCalculator:
         i = left
         res = 0
         while i < right:
-            if tokens[i] == '(':
-                res = self._calculate(tokens, sub_exprs, i + 1, sub_exprs[i])
-                i = sub_exprs[i] + 1
+            if self._is_sub_expr(tokens[i]):
+                res, i = self._calc_sub_expr(tokens, sub_exprs, i)
                 continue
-            if self._is_number(tokens[i]):
-                res = self._eval_op('+', tokens[i], 0)
-                i += 1
-                continue
+
             op = tokens[i]
             if i + 1 == right:
                 raise RuntimeError(f"Incomplete expression at idx: {i}, expected operand")
-            if tokens[i + 1] == '(':
-                b = self._calculate(tokens, sub_exprs, i + 2, sub_exprs[i + 1])
-                i = sub_exprs[i + 1] + 1
-            else:
-                self._ensure_is_number(tokens[i + 1], i + 1)
-                b = tokens[i + 1]
-                i += 2
+            b, i = self._calc_sub_expr(tokens, sub_exprs, i + 1)
             res = self._eval_op(op, res, b)
                 
         return res
+
+    def _calc_sub_expr(self, tokens, sub_exprs, idx):
+        if tokens[idx] == '(':
+            end_idx = sub_exprs[idx] + 1
+            res = self._calculate(tokens, sub_exprs, idx + 1, sub_exprs[idx])
+            next_idx = sub_exprs[idx] + 1
+        else:
+            self._ensure_is_number(tokens[idx], idx)
+            res = self._eval_op('+', tokens[idx], 0)
+            next_idx = idx + 1
+
+        return res, next_idx
 
     def _ensure_is_op(self, token, idx):
         if token not in BasicCalculator._ops:
@@ -112,6 +114,9 @@ class BasicCalculator:
     def _ensure_is_number(self, token, idx):
         if token in BasicCalculator._parens or token in BasicCalculator._ops:
             raise RuntimeError(f"Invalid token at idx: {idx}, expected number, but got: {token}")
+
+    def _is_sub_expr(self, token):
+        return token == '(' or self._is_number(token)
 
     def _is_number(self, token):
         return all(x in BasicCalculator._numbers for x in token)
