@@ -89,10 +89,6 @@ class TestCalculator(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             BC().run("-(-3)+")
 
-    def test_missing_operand_1(self):
-        with self.assertRaises(RuntimeError):
-            BC().run("1+3+-4-7")
-
     def test_simple_multiply(self):
         self.assertEqual(BC().run("*3"), 0)
 
@@ -202,5 +198,22 @@ class TestCalculator(unittest.TestCase):
 
     def test_unary_grouping_div_1(self):
         inp = "-20/-4/-2/(-4/-(-3/2))"
+        eval_inp = inp.replace('/', '//')
+        self.assertEqual(BC().run(inp), eval(eval_inp))
+
+    def test_unary_grouping_plus_minus(self):
+        inp = "-3+-4"
+        self.assertEqual(BC().run(inp), eval(inp))
+
+    def test_unary_grouping_plus_minus_1(self):
+        inp = "-3+-4-4-+2"
+        self.assertEqual(BC().run(inp), eval(inp))
+
+    def test_unary_grouping_plus_minus_2(self):
+        inp = "-3+-4--4-+2--3"
+        self.assertEqual(BC().run(inp), eval(inp))
+
+    def test_unary_grouping_all_ops(self):
+        inp = "-20--4*-2/(-4/-(-3/2))"
         eval_inp = inp.replace('/', '//')
         self.assertEqual(BC().run(inp), eval(eval_inp))

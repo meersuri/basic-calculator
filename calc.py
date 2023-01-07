@@ -13,7 +13,6 @@ class BasicCalculator:
         ('-','/'):'/',
     }
 
-
     def __init__(self):
         self._input_str = ""
 
@@ -53,6 +52,7 @@ class BasicCalculator:
         tokens = self._handle_exp_starts_with_plus_minus(tokens)
         tokens = self._handle_sub_expr_starts_with_plus_minus(tokens)
         tokens = self._handle_mul_div_followed_by_plus_minus(tokens)
+        tokens = self._handle_successive_plus_minus(tokens)
         return tokens
 
     def _handle_exp_starts_with_plus_minus(self, tokens):
@@ -94,6 +94,27 @@ class BasicCalculator:
         sub_exprs = self._find_sub_exprs(tokens)
         while i < len(tokens) - 1:
             if tokens[i] not in ['*', '/']:
+                i += 1
+                continue
+            if tokens[i + 1] not in ['+', '-']:
+                i += 1
+                continue
+            self._ensure_is_sub_expr(tokens[i + 2], i + 2)
+            next_idx = self._get_next_idx(tokens, sub_exprs, i + 2)
+
+            tokens.insert(next_idx, ')')
+            tokens.insert(i + 1, '(')
+
+            sub_exprs = self._find_sub_exprs(tokens)
+            i = 0
+
+        return tokens
+
+    def _handle_successive_plus_minus(self, tokens):
+        i = 0
+        sub_exprs = self._find_sub_exprs(tokens)
+        while i < len(tokens) - 1:
+            if tokens[i] not in ['+', '-']:
                 i += 1
                 continue
             if tokens[i + 1] not in ['+', '-']:
@@ -196,8 +217,8 @@ class BasicCalculator:
     def _ensure_is_sub_expr(self, token, idx):
         if self._is_number(token):
             return
-        if token != '(':
-            raise RuntimeError(f"Invalid token at idx: {idx}, expected `(`, but got: {token}")
+        if token not in ['('] + BasicCalculator._numbers:
+            raise RuntimeError(f"Invalid token at idx: {idx}, expected `(` or number, but got: {token}")
 
     def _ensure_is_number(self, token, idx):
         if token in BasicCalculator._parens or token in BasicCalculator._ops:
