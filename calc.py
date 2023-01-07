@@ -42,6 +42,46 @@ class BasicCalculator:
         return tokens
 
     def _set_op_precedence(self, tokens):
+        self._set_unary_op_precedence(tokens)
+        self._set_binary_op_precedence(tokens)
+        return tokens
+
+    def _set_unary_op_precedence(self, tokens):
+        if len(tokens) <= 1:
+            return tokens
+
+        sub_exprs = self._find_sub_exprs(tokens)
+        if tokens[0] in ['+', '-']:
+            next_idx = self._get_next_idx(tokens, sub_exprs, 1)
+            tokens.insert(next_idx, ')')
+            tokens.insert(0, '(')
+
+        i = 0
+        sub_exprs = self._find_sub_exprs(tokens)
+        while i < len(tokens) - 1:
+            if tokens[i] != '(':
+                i += 1
+                continue
+            if tokens[i + 1] not in ['+', '-']:
+                i += 1
+                continue
+            self._ensure_is_sub_expr(tokens[i + 2], i + 2)
+            next_idx = self._get_next_idx(tokens, sub_exprs, i + 2)
+            if tokens[next_idx] == ')':
+                i += 1
+                continue
+
+            tokens.insert(next_idx, ')')
+            tokens.insert(i, '(')
+
+            sub_exprs = self._find_sub_exprs(tokens)
+            i = 0
+
+        return tokens
+
+
+
+    def _set_binary_op_precedence(self, tokens):
         '''
         3-5*2
         3-(5*2)
@@ -49,8 +89,8 @@ class BasicCalculator:
         4+((3-5)*(4+5*3))
         4+((3-5)*(4+(5*3)))
 
-       (.. 3)-5*2
-       ((.. 3)-5)*2
+        (.. 3)-5*2
+        ((.. 3)-5)*2
         '''
         sub_exprs = self._find_sub_exprs(tokens)
         i = 1
@@ -123,6 +163,12 @@ class BasicCalculator:
     def _ensure_is_op(self, token, idx):
         if token not in BasicCalculator._ops:
             raise RuntimeError(f"Invalid token at idx: {idx}, expected operator, but got: {token}")
+
+    def _ensure_is_sub_expr(self, token, idx):
+        if self._is_number(token):
+            return
+        if token != '(':
+            raise RuntimeError(f"Invalid token at idx: {idx}, expected `(`, but got: {token}")
 
     def _ensure_is_number(self, token, idx):
         if token in BasicCalculator._parens or token in BasicCalculator._ops:

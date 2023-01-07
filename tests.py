@@ -147,21 +147,28 @@ class TestCalculator(unittest.TestCase):
     def test_simple_add_divide_1(self):
         self.assertEqual(BC().run("48+3/2+4"), 53)
 
-    @unittest.expectedFailure
     def test_simple_divide_negative(self):
         inp = "-3/2"
         eval_inp = inp.replace('/', '//')
         self.assertEqual(eval(eval_inp), BC().run(inp))
 
-    @unittest.expectedFailure
     def test_simple_divide_negative_1(self):
         inp = "-3/-2"
         eval_inp = inp.replace('/', '//')
         self.assertEqual(eval(eval_inp), BC().run(inp))
 
-    @unittest.expectedFailure
     def test_simple_divide_negative_2(self):
         inp = "-3/(-2)"
+        eval_inp = inp.replace('/', '//')
+        self.assertEqual(eval(eval_inp), BC().run(inp))
+
+    def test_simple_divide_negative_3(self):
+        inp = "1-(-3/2)"
+        eval_inp = inp.replace('/', '//')
+        self.assertEqual(eval(eval_inp), BC().run(inp))
+
+    def test_simple_divide_negative_4(self):
+        inp = "1-(-(3+2)/2)"
         eval_inp = inp.replace('/', '//')
         self.assertEqual(eval(eval_inp), BC().run(inp))
 
@@ -177,5 +184,14 @@ class TestCalculator(unittest.TestCase):
 
     def test_all_ops_1(self):
         inp = "3+(4-(3*(12/(-(4+3/7)+2)-3)/1+2)-4)*2"
+        eval_inp = inp.replace('/', '//')
+        self.assertEqual(BC().run(inp), eval(eval_inp))
+
+    def test_unary_grouping_mul(self):
+        inp = "-3*-4"
+        self.assertEqual(BC().run(inp), eval(eval_inp))
+
+    def test_unary_grouping_div(self):
+        inp = "-3/-4"
         eval_inp = inp.replace('/', '//')
         self.assertEqual(BC().run(inp), eval(eval_inp))
