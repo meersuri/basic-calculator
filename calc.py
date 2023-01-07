@@ -50,12 +50,22 @@ class BasicCalculator:
         if len(tokens) <= 1:
             return tokens
 
+        tokens = self._handle_exp_starts_with_plus_minus(tokens)
+        tokens = self._handle_sub_expr_starts_with_plus_minus(tokens)
+        tokens = self._handle_mul_div_followed_by_plus_minus(tokens)
+        return tokens
+
+    def _handle_exp_starts_with_plus_minus(self, tokens):
+
         sub_exprs = self._find_sub_exprs(tokens)
         if tokens[0] in ['+', '-']:
             next_idx = self._get_next_idx(tokens, sub_exprs, 1)
             tokens.insert(next_idx, ')')
             tokens.insert(0, '(')
 
+        return tokens
+
+    def _handle_sub_expr_starts_with_plus_minus(self, tokens):
         i = 0
         sub_exprs = self._find_sub_exprs(tokens)
         while i < len(tokens) - 1:
@@ -77,6 +87,9 @@ class BasicCalculator:
             sub_exprs = self._find_sub_exprs(tokens)
             i = 0
 
+        return tokens
+
+    def _handle_mul_div_followed_by_plus_minus(self, tokens):
         i = 0
         sub_exprs = self._find_sub_exprs(tokens)
         while i < len(tokens) - 1:
