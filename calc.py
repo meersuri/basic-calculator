@@ -77,9 +77,25 @@ class BasicCalculator:
             sub_exprs = self._find_sub_exprs(tokens)
             i = 0
 
+        i = 0
+        sub_exprs = self._find_sub_exprs(tokens)
+        while i < len(tokens) - 1:
+            if tokens[i] not in ['*', '/']:
+                i += 1
+                continue
+            if tokens[i + 1] not in ['+', '-']:
+                i += 1
+                continue
+            self._ensure_is_sub_expr(tokens[i + 2], i + 2)
+            next_idx = self._get_next_idx(tokens, sub_exprs, i + 2)
+
+            tokens.insert(next_idx, ')')
+            tokens.insert(i + 1, '(')
+
+            sub_exprs = self._find_sub_exprs(tokens)
+            i = 0
+
         return tokens
-
-
 
     def _set_binary_op_precedence(self, tokens):
         '''

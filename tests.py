@@ -189,9 +189,18 @@ class TestCalculator(unittest.TestCase):
 
     def test_unary_grouping_mul(self):
         inp = "-3*-4"
-        self.assertEqual(BC().run(inp), eval(eval_inp))
+        self.assertEqual(BC().run(inp), eval(inp))
+
+    def test_unary_grouping_mul_1(self):
+        inp = "-3*-4-4*-2"
+        self.assertEqual(BC().run(inp), eval(inp))
 
     def test_unary_grouping_div(self):
         inp = "-3/-4"
+        eval_inp = inp.replace('/', '//')
+        self.assertEqual(BC().run(inp), eval(eval_inp))
+
+    def test_unary_grouping_div_1(self):
+        inp = "-20/-4/-2/(-4/-(-3/2))"
         eval_inp = inp.replace('/', '//')
         self.assertEqual(BC().run(inp), eval(eval_inp))
