@@ -2,7 +2,9 @@ import sys
 from calc import BasicCalculator
 from PySide2 import QtCore, QtWidgets, QtGui
 
+
 class BasicCalc(QtWidgets.QWidget):
+
     def __init__(self):
         super().__init__()
 
@@ -18,7 +20,8 @@ class BasicCalc(QtWidgets.QWidget):
         self.layout.addWidget(self.text_input)
         self.layout.addWidget(self.button_input)
 
-        self.button_input.oppad.ops['equals'].clicked.connect(self.equals_clicked)
+        self.button_input.oppad.ops['equals'].clicked.connect(
+            self.equals_clicked)
         self.text_input.input.returnPressed.connect(self.equals_clicked)
         for i, number in enumerate(self.button_input.numpad.numbers):
             number.clicked.connect(self.number_clicked)
@@ -48,7 +51,9 @@ class BasicCalc(QtWidgets.QWidget):
         inp = self.text_input.input.text()
         self.text_input.input.setText(inp + op)
 
+
 class TextInput(QtWidgets.QWidget):
+
     def __init__(self):
         super().__init__()
         self.input = QtWidgets.QLineEdit()
@@ -59,7 +64,9 @@ class TextInput(QtWidgets.QWidget):
 
         self.layout.addWidget(self.input)
 
+
 class ButtonInput(QtWidgets.QWidget):
+
     def __init__(self):
         super().__init__()
         self.numpad = NumberInput()
@@ -71,11 +78,13 @@ class ButtonInput(QtWidgets.QWidget):
         self.layout.addWidget(self.numpad)
         self.layout.addWidget(self.oppad)
 
+
 class OperatorInput(QtWidgets.QWidget):
+
     def __init__(self):
         super().__init__()
         self.ops = {}
-        ops = [('plus','+'), ('minus','-'), ('equals', '=')]
+        ops = [('plus', '+'), ('minus', '-'), ('equals', '=')]
         for name, symbol in ops:
             self.ops[name] = QtWidgets.QPushButton(symbol)
         self.layout = QtWidgets.QVBoxLayout()
@@ -84,7 +93,9 @@ class OperatorInput(QtWidgets.QWidget):
         for op in self.ops.values():
             self.layout.addWidget(op)
 
+
 class NumberInput(QtWidgets.QWidget):
+
     def __init__(self):
         super().__init__()
         self.numbers = [QtWidgets.QPushButton(str(i)) for i in range(10)]
@@ -96,7 +107,7 @@ class NumberInput(QtWidgets.QWidget):
         while i < 10:
             number = self.numbers[i]
             idx = i - 1
-            self.layout.addWidget(number, 2 - idx//3, idx - (idx//3)*3)
+            self.layout.addWidget(number, 2 - idx // 3, idx - (idx // 3) * 3)
             i += 1
         self.layout.addWidget(self.numbers[0], 3, 0, columnSpan=3)
 

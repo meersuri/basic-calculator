@@ -1,16 +1,18 @@
 import sys
 
+
 class BasicCalculator:
 
     _numbers = [str(i) for i in range(10)]
     _ops = ['+', '-', '*', '/']
     _parens = ['(', ')']
-    _valid_tokens =  _numbers + _ops + _parens
+    _valid_tokens = _numbers + _ops + _parens
+
     _precedence_rules = {
-        ('+','*'):'*',
-        ('-','*'):'*',
-        ('+','/'):'/',
-        ('-','/'):'/',
+        ('+', '*'): '*',
+        ('-', '*'): '*',
+        ('+', '/'): '/',
+        ('-', '/'): '/',
     }
 
     def __init__(self):
@@ -27,7 +29,7 @@ class BasicCalculator:
                 right += 1
                 continue
             if right > left:
-                token = input_str[left: right]
+                token = input_str[left:right]
                 tokens.append(token)
             tokens.append(input_str[right])
             left, right = right + 1, right + 1
@@ -150,14 +152,15 @@ class BasicCalculator:
             if next_idx >= len(tokens):
                 i += 1
                 continue
-            if not (self._is_sub_expr(tokens[i]) and self._is_op(tokens[prev_idx]), self._is_op(tokens[next_idx])):
+            if not (self._is_sub_expr(tokens[i]) and self._is_op(
+                    tokens[prev_idx]), self._is_op(tokens[next_idx])):
                 i += 1
                 continue
 
             op_pair = (tokens[prev_idx], tokens[next_idx])
             winner = BasicCalculator._precedence_rules.get(op_pair, op_pair[0])
             if winner == op_pair[0]:
-                i += 1 # matches default left->right order
+                i += 1  # matches default left->right order
                 continue
 
             # insert explicit parens to change ordering
@@ -173,7 +176,7 @@ class BasicCalculator:
         if tokens[idx] == '(':
             return sub_exprs[idx] + 1
         return idx + 1
-        
+
     def _calculate(self, tokens, sub_exprs, left, right):
         '''
         2+3-1
@@ -192,10 +195,11 @@ class BasicCalculator:
 
             op = tokens[i]
             if i + 1 == right:
-                raise RuntimeError(f"Incomplete expression at idx: {i}, expected operand")
+                raise RuntimeError(
+                    f"Incomplete expression at idx: {i}, expected operand")
             b, i = self._calc_sub_expr(tokens, sub_exprs, i + 1)
             res = self._eval_op(op, res, b)
-                
+
         return res
 
     def _calc_sub_expr(self, tokens, sub_exprs, idx):
@@ -212,17 +216,23 @@ class BasicCalculator:
 
     def _ensure_is_op(self, token, idx):
         if token not in BasicCalculator._ops:
-            raise RuntimeError(f"Invalid token at idx: {idx}, expected operator, but got: {token}")
+            raise RuntimeError(
+                f"Invalid token at idx: {idx}, expected operator, but got: {token}"
+            )
 
     def _ensure_is_sub_expr(self, token, idx):
         if self._is_number(token):
             return
         if token not in ['('] + BasicCalculator._numbers:
-            raise RuntimeError(f"Invalid token at idx: {idx}, expected `(` or number, but got: {token}")
+            raise RuntimeError(
+                f"Invalid token at idx: {idx}, expected `(` or number, but got: {token}"
+            )
 
     def _ensure_is_number(self, token, idx):
         if token in BasicCalculator._parens or token in BasicCalculator._ops:
-            raise RuntimeError(f"Invalid token at idx: {idx}, expected number, but got: {token}")
+            raise RuntimeError(
+                f"Invalid token at idx: {idx}, expected number, but got: {token}"
+            )
 
     def _is_sub_expr(self, token):
         return token == '(' or self._is_number(token)
@@ -271,11 +281,11 @@ class BasicCalculator:
     def run(self, input_str):
         self._input_str = input_str
         self._tokens = self._tokenize(input_str)
-        print(''.join(self._tokens))
         self._tokens = self._set_op_precedence(self._tokens)
         print(''.join(self._tokens))
         sub_exprs = self._find_sub_exprs(self._tokens)
         return self._calculate(self._tokens, sub_exprs, 0, len(self._tokens))
+
 
 if __name__ == '__main__':
     calc = BasicCalculator()
@@ -285,4 +295,3 @@ if __name__ == '__main__':
         inp = " -2  +(14 - 330)- 3"
     print(f"Input: {inp}")
     print(f"Result: {calc.run(inp)}")
-        

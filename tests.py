@@ -2,11 +2,12 @@ import unittest
 
 from calc import BasicCalculator as BC
 
+
 class TestCalculator(unittest.TestCase):
 
     def test_no_op(self):
         self.assertEqual(1, BC().run("1"))
-    
+
     def test_negation(self):
         self.assertEqual(-1, BC().run("-1"))
 
