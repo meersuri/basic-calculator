@@ -1,7 +1,7 @@
 import sys
 
 
-class BasicCalculator:
+class Calc:
 
     _numbers = [str(i) for i in range(10)]
     _ops = ['+', '-', '*', '/']
@@ -23,9 +23,9 @@ class BasicCalculator:
         tokens = []
         left, right = 0, 0
         while right < len(input_str):
-            if input_str[right] not in BasicCalculator._valid_tokens:
+            if input_str[right] not in Calc._valid_tokens:
                 raise RuntimeError(f"Invalid character: {input_str[right]}")
-            if input_str[right] in BasicCalculator._numbers:
+            if input_str[right] in Calc._numbers:
                 right += 1
                 continue
             if right > left:
@@ -158,7 +158,7 @@ class BasicCalculator:
                 continue
 
             op_pair = (tokens[prev_idx], tokens[next_idx])
-            winner = BasicCalculator._precedence_rules.get(op_pair, op_pair[0])
+            winner = Calc._precedence_rules.get(op_pair, op_pair[0])
             if winner == op_pair[0]:
                 i += 1  # matches default left->right order
                 continue
@@ -215,7 +215,7 @@ class BasicCalculator:
         return res, next_idx
 
     def _ensure_is_op(self, token, idx):
-        if token not in BasicCalculator._ops:
+        if token not in Calc._ops:
             raise RuntimeError(
                 f"Invalid token at idx: {idx}, expected operator, but got: {token}"
             )
@@ -223,13 +223,13 @@ class BasicCalculator:
     def _ensure_is_sub_expr(self, token, idx):
         if self._is_number(token):
             return
-        if token not in ['('] + BasicCalculator._numbers:
+        if token not in ['('] + Calc._numbers:
             raise RuntimeError(
                 f"Invalid token at idx: {idx}, expected `(` or number, but got: {token}"
             )
 
     def _ensure_is_number(self, token, idx):
-        if token in BasicCalculator._parens or token in BasicCalculator._ops:
+        if token in Calc._parens or token in Calc._ops:
             raise RuntimeError(
                 f"Invalid token at idx: {idx}, expected number, but got: {token}"
             )
@@ -238,7 +238,7 @@ class BasicCalculator:
         return token == '(' or self._is_number(token)
 
     def _is_number(self, token):
-        return all(x in BasicCalculator._numbers for x in token)
+        return all(x in Calc._numbers for x in token)
 
     def _is_op(self, token):
         return token in self._ops
@@ -288,7 +288,7 @@ class BasicCalculator:
 
 
 if __name__ == '__main__':
-    calc = BasicCalculator()
+    calc = Calc()
     if len(sys.argv) > 1:
         inp = sys.argv[1]
     else:

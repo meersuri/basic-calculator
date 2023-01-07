@@ -1,6 +1,6 @@
 import unittest
 
-from calc import BasicCalculator as BC
+from BasicCalculator import Calc as BC
 
 
 class TestCalculator(unittest.TestCase):
