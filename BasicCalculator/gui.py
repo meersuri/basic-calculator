@@ -1,5 +1,5 @@
 import sys
-from calc import BasicCalculator
+from calc import Calc
 from PySide2 import QtCore, QtWidgets, QtGui
 
 
@@ -8,8 +8,8 @@ class BasicCalc(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
 
-        self.bc = BasicCalculator()
-        self.height, self.width = 600, 800
+        self.bc = Calc()
+        self.height, self.width = 400, 400
 
         self.text_input = TextInput()
         self.button_input = ButtonInput()
@@ -58,6 +58,10 @@ class TextInput(QtWidgets.QWidget):
         super().__init__()
         self.input = QtWidgets.QLineEdit()
         self.input.setClearButtonEnabled(True)
+        self.input.setFixedHeight(60)
+        font = self.input.font()
+        font.setPointSize(22)
+        self.input.setFont(font)
 
         self.layout = QtWidgets.QVBoxLayout()
         self.setLayout(self.layout)
@@ -109,7 +113,7 @@ class NumberInput(QtWidgets.QWidget):
             idx = i - 1
             self.layout.addWidget(number, 2 - idx // 3, idx - (idx // 3) * 3)
             i += 1
-        self.layout.addWidget(self.numbers[0], 3, 0, columnSpan=3)
+        self.layout.addWidget(self.numbers[0], 3, 1, columnSpan=3)
 
 
 if __name__ == '__main__':
