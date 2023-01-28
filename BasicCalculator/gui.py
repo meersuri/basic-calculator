@@ -13,10 +13,12 @@ class BasicCalc(QtWidgets.QWidget):
 
         self.text_input = TextInput()
         self.button_input = ButtonInput()
+        self.console = Console()
 
         self.layout = QtWidgets.QVBoxLayout()
         self.setLayout(self.layout)
 
+        self.layout.addWidget(self.console)
         self.layout.addWidget(self.text_input)
         self.layout.addWidget(self.button_input)
 
@@ -32,13 +34,16 @@ class BasicCalc(QtWidgets.QWidget):
         self.setWindowTitle("BasicCalculator")
 
         self.resize(self.width, self.height)
+        self.text_input.input.setFocus()
 
     def equals_clicked(self):
+        input_text = self.text_input.input.text()
         try:
             out = self.bc.run(self.text_input.input.text())
         except Exception as e:
-            self.text_input.input.setText(str(e))
+            self.console.text.setText(str(e))
         else:
+            self.console.text.setText(input_text)
             self.text_input.input.setText(str(out))
 
     def number_clicked(self):
@@ -114,6 +119,16 @@ class NumberInput(QtWidgets.QWidget):
             self.layout.addWidget(number, 2 - idx // 3, idx - (idx // 3) * 3)
             i += 1
         self.layout.addWidget(self.numbers[0], 3, 1, columnSpan=3)
+
+class Console(QtWidgets.QWidget):
+
+    def __init__(self):
+        super().__init__()
+        self.layout = QtWidgets.QVBoxLayout()
+        self.setLayout(self.layout)
+        self.text = QtWidgets.QLineEdit()
+        self.text.setReadOnly(True)
+        self.layout.addWidget(self.text)
 
 
 if __name__ == '__main__':
