@@ -287,7 +287,7 @@ class Calc:
         return self._calculate(self._tokens, sub_exprs, 0, len(self._tokens))
 
 
-if __name__ == '__main__':
+def main():
     calc = Calc()
     if len(sys.argv) > 1:
         inp = sys.argv[1]
@@ -295,3 +295,7 @@ if __name__ == '__main__':
         inp = " -2  +(14 - 330)- 3"
     print(f"Input: {inp}")
     print(f"Result: {calc.run(inp)}")
+
+
+if __name__ == '__main__':
+    main()

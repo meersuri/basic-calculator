@@ -1,6 +1,8 @@
 import sys
-from calc import Calc
+
 from PySide2 import QtCore, QtWidgets, QtGui
+
+from BasicCalculator.calculator.calc import Calc
 
 
 class BasicCalc(QtWidgets.QWidget):
@@ -120,6 +122,7 @@ class NumberInput(QtWidgets.QWidget):
             i += 1
         self.layout.addWidget(self.numbers[0], 3, 1, columnSpan=3)
 
+
 class Console(QtWidgets.QWidget):
 
     def __init__(self):
@@ -131,8 +134,12 @@ class Console(QtWidgets.QWidget):
         self.layout.addWidget(self.text)
 
 
-if __name__ == '__main__':
+def main():
     app = QtWidgets.QApplication([])
     calc = BasicCalc()
     calc.show()
     sys.exit(app.exec_())
+
+
+if __name__ == '__main__':
+    main()
